@@ -17,3 +17,5 @@ const getWeather = async () => {
 }
 
 getWeather()
+
+// remember to call your functions
