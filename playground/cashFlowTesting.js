@@ -413,11 +413,59 @@ const nameDates = (objects, datesArray) => {
     return cashflowArray;
 };
 
+const cashflowArray = nameDates(objects, formattedDatesArray)
+
+
+//----------------------------------->
+
+const minMonth = (dates) => {
+  let lowestCurrentMonth = 12
+
+  dates.forEach((date) => {
+    if (date.slice(5, 7) < lowestCurrentMonth) {
+      lowestCurrentMonth = date.slice(5, 7)
+    }
+  })
+  return lowestCurrentMonth
+}
+
+const startMonth = minMonth(dates)
+
+const insertNewDates = (cashflowArray) => {
+  let startDate = new Date(`${startMonth}/01/2020`)
+  let endDate = new Date()
+  let completeDatesArray = []
+
+  let loop = new Date(startDate);
+    while (loop <= endDate) {
+  let newDate = loop.setDate(loop.getDate() + 1);
+    loop = new Date(newDate);
+
+   completeDatesArray.push(new Date(newDate));
+  }
+  return completeDatesArray
+}
 
 
 getDates(data)
 timesDateAppears(dates, data)
 summariseSpendingByDays(arrayOfAppearances)
-// formatDates(dates)
-// nameDates(objects, formattedDatesArray)
+formatDates(dates)
+nameDates(objects, formattedDatesArray)
+
+const reFormatDates = (dates) => {
+  let existingDates = []
+  dates.forEach((date) => {
+    existingDates.push(new Date(date))
+  })
+  return existingDates
+}
+
+reFormatDates(dates)
+
+//---------------------------->
+
+minMonth(dates)
+insertNewDates(cashflowArray)
+
 
