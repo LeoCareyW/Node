@@ -388,7 +388,6 @@ const summariseSpendingByDays = (array) => {
         averageValue: (totalValue / innerArray.length)
       });
     });
-  console.log(finalArray)
   return(finalArray)
 };
 
@@ -462,7 +461,19 @@ const reFormatDates = (dates) => {
 
 
 
+// ---------------------------------------------
 
+app.get('/insights', async (req, res, next) => {
+  try {
+  await fetch('http://54.154.227.172:3000/transactions')
+    .then(res => res.json())
+    .then(data => {
+      res.send(data)
+    })
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 
 
