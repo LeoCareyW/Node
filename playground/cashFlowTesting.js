@@ -403,39 +403,41 @@ const formatDates = (dates) => {
 
 const formattedDatesArray = formatDates(dates);
 
-const nameDates = (objects, datesArray) => {
-  const cashflowArray = [];
-    for (let i = 0; i <= datesArray.length - 1; i++) {
-      cashflowArray.push(`{ "${datesArray[i]}": { "totalNumber": ${objects[i].totalNumber}, "totalValue": ${objects[i].totalValue}, "averageValue": ${objects[i].averageValue} }`)
-    };
-    console.log(cashflowArray);
-    return cashflowArray;
-};
 
-const cashflowArray = nameDates(objects, formattedDatesArray)
+let lowestCurrentMonth = 12
+let lowestCurrentDay = 30
 
-
-//----------------------------------->
-
-
-
-
-
-const minMonth = (dates) => {
-  let lowestCurrentMonth = 12
-
+const getEarliestDate = (dates) => {
   dates.forEach((date) => {
     if (date.slice(5, 7) < lowestCurrentMonth) {
       lowestCurrentMonth = date.slice(5, 7)
     }
+    if ((date.slice(5, 7) === lowestCurrentMonth) && (date.slice(8, 10) < lowestCurrentDay))
+      lowestCurrentDay = date.slice(8, 10)
   })
-  return lowestCurrentMonth
 }
 
-const startMonth = minMonth(dates)
+// this function is optional (add values into endDate in 'insertZeroValues') so that information will end
+// with most recent transaction
 
-const insertNewDates = (cashflowArray) => {
-  let startDate = new Date(`${startMonth}/01/2020`)
+// let highestCurrentMonth = 1
+// let highestCurrentDay = 1
+
+// const getLatestDay = (dates) => {
+//   dates.forEach((date) => {
+//     if (date.slice(5, 7) > highestCurrentMonth) {
+//       highestCurrentMonth = date.slice(5, 7)
+//     }
+//     if ((date.slice(5, 7) === highestCurrentMonth) && (date.slice(8, 10) < lowestCurrentDay))
+//       highestCurrentDay = date.slice(8, 10)
+//   })
+// }
+
+const startMonth = getEarliestDate(dates)
+
+
+const insertZeroValueDates = () => {
+  let startDate = new Date(`${lowestCurrentMonth}/${lowestCurrentDay - 1}/2020`)
   let endDate = new Date()
   let completeDatesArray = []
 
@@ -444,52 +446,66 @@ const insertNewDates = (cashflowArray) => {
   let newDate = loop.setDate(loop.getDate() + 1);
     loop = new Date(newDate);
 
-   completeDatesArray.push(new Date(newDate));
+  let dateToPush = (`${new Date(newDate)}`)
+
+   completeDatesArray.push(dateToPush.slice(4, 15));
   }
-  console.log(completeDatesArray)
   return completeDatesArray
 }
+
+
+const completeDatesArray = insertZeroValueDates()
 
 const reFormatDates = (dates) => {
   let existingDates = []
   dates.forEach((date) => {
-    existingDates.push(new Date(date))
+    let dateToPush = `${new Date(date)}`
+    existingDates.push(dateToPush.slice(4, 15))
   })
-  console.log(existingDates)
   return existingDates
 }
 
+const shortDatesList = reFormatDates(dates)
 
+
+const fillInData = (valueDatesArray, emptyValueArray) => {
+  const finalDataArray = []
+
+  emptyValueArray.forEach((item) => {
+    let index = valueDatesArray.indexOf(item)
+    if (index >= 0) {
+      finalDataArray.push(`{ "${item}": { "totalNumber": ${objects[index].totalNumber}, "totalValue": ${objects[index].totalValue}, "averageValue": ${objects[index].averageValue} }`)
+    } else {
+      finalDataArray.push(`{ "${item}": { "totalNumber": 0, "totalValue": 0, "averageValue": 0 }`)
+    }
+  })
+console.log(finalDataArray)
+return finalDataArray
+}
 
 // ---------------------------------------------
 
-app.get('/insights', async (req, res, next) => {
-  try {
-  await fetch('http://54.154.227.172:3000/transactions')
-    .then(res => res.json())
-    .then(data => {
-      res.send(data)
-    })
-  } catch (error) {
-    console.log(error)
-  }
-})
-
-
-
-
-
-
-
-
+// app.get('/insights', async (req, res, next) => {
+//   try {
+//   await fetch('http://54.154.227.172:3000/transactions')
+//     .then(res => res.json())
+//     .then(data => {
+//       res.send(data)
+//     })
+//   } catch (error) {
+//     console.log(error)
+//   }
+// })
 
 //---------------------------->
 getDates(data)
 timesDateAppears(dates, data)
 summariseSpendingByDays(arrayOfAppearances)
 formatDates(dates)
-nameDates(objects, formattedDatesArray)
-minMonth(dates)
-insertNewDates(cashflowArray)
+getEarliestDate(dates)
+insertZeroValueDates()
 reFormatDates(dates)
+fillInData(shortDatesList, completeDatesArray)
+
+console.log(objects)
 
