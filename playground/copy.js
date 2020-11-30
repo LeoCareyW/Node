@@ -65,18 +65,18 @@ const getEarliestDate = (dates) => {
 // this function is optional (add values into endDate in 'insertZeroValues') so that information will end
 // with most recent transaction
 
-// let highestCurrentMonth = 1
-// let highestCurrentDay = 1
+let highestCurrentMonth = 1
+let highestCurrentDay = 1
 
-// const getLatestDay = (dates) => {
-//   dates.forEach((date) => {
-//     if (date.slice(5, 7) > highestCurrentMonth) {
-//       highestCurrentMonth = date.slice(5, 7)
-//     }
-//     if ((date.slice(5, 7) === highestCurrentMonth) && (date.slice(8, 10) < lowestCurrentDay))
-//       highestCurrentDay = date.slice(8, 10)
-//   })
-// }
+const getLatestDay = (dates) => {
+  dates.forEach((date) => {
+    if (date.slice(5, 7) > highestCurrentMonth) {
+      highestCurrentMonth = date.slice(5, 7)
+    }
+    if ((date.slice(5, 7) === highestCurrentMonth) && (date.slice(8, 10) < lowestCurrentDay))
+      highestCurrentDay = date.slice(8, 10)
+  })
+}
 
 const startMonth = getEarliestDate(dates)
 
