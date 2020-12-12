@@ -21,3 +21,6 @@ function getPermutations(string) {
 
   return permutations;
 }
+
+
+// what if
